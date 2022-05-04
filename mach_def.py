@@ -51,14 +51,13 @@ def get_sukusyo(pdf_img,interval):
         hash = imagehash.average_hash(Image.open(path1)) 
         print(hash) 
         
-        otherhash = imagehash.average_hash(Image.open(path2)) 
+        otherhash = imagehash.avearge_hash(Image.open(path2)) 
         print(otherhash) 
         
         print(hash == otherhash) 
         print(hash - otherhash)
         return hash == otherhash
     i = 1
-    check = 0
     global path
     path = "sukusyo"
     os.mkdir(path)
