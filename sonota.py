@@ -49,7 +49,7 @@ def tab3_main(tab3):
     def click_export_button():
         # 翻訳
         tr = Translator()
-        result = tr.translate(answer_ja, src="ja", dest="en").text
+        result = tr.translate(answer_ja, src="en", dest="ja").text
         print(f'翻訳前 :{result}')
         
         # 
