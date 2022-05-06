@@ -9,7 +9,6 @@ from tkinter import messagebox
 # global 変数
 answer_ja = ''
 
-
-
 def tab2_main(tab2):
     pass
+
