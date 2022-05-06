@@ -6,69 +6,115 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 from googletrans import Translator
- 
+
+from re import X
+import pyautogui 
+import ctypes
+import time
+import pyautogui as pag
 # global 変数
 answer_ja = ''
 
 
 
-def tab1_main(tab1):
+
+
     
-    tr = Translator()
-    result = tr.translate("hello", src="en", dest="ja").text
-    print(result)
+    
+        #s = input("sと入力してください:")
+x1 ,x2, y1, y2 = 0,0,0,0
+
+def tab1_main(tab1):
     bg_col =  '#ffffe0'
     tab1['bg'] = bg_col
-
-
-    #文字を表示する。
-    param_name = tk.Label(tab1, text="Tlanslater",font=('',18),bg = bg_col)
-    param_name.place(x=10, y=10)
     
-    # テキストボックス
-    text_box = tk.Text(tab1, width = 65, bg="#e0ffff", fg="#2f4f4f", insertbackground="#2f4f4f",
-                relief="ridge", bd=5,height=10)
     
-    text_box.place(x= 10, y= 40)
-
-    ok_button = tk.Button(tab1, text="OK", width = 7, relief="solid", bd=1)
-    ok_button.place(x=220,y = 190)
-
-
-    # テキストの入力完了ボタン
-    def ok_click():
-        global answer_ja
-        input_text = text_box.get("1.0", "end")
-        print(input_text)
-        answer_ja = input_text
-        click_export_button()
-    ok_button["command"] = ok_click
+    
+    
+    
 
 
-    # 出力処理
-    def click_export_button():
-        # 翻訳
-        tr = Translator()
-        result = tr.translate(answer_ja, src="ja", dest="en").text
-        print(f'翻訳前 :{result}')
+    def mouse():
+        global x1,x2,y1,y2
+        print("左上端をクリックしてください")
+        messagebox.showinfo('確認', 'スクショ範囲の左上をクリック')
+        xy1.delete(0, tk.END)
+        xy2.delete(0, tk.END)
+        try:
+            while True:
+                if ctypes.windll.user32.GetAsyncKeyState(0x01) == 0x8000:
+                    x, y = pag.position()
+                    print(str(x) + ':' + str(y))
+                    x1 = x
+                    y1 = y
+                    time.sleep(1)
+                    break
+                ### ここにクリック時の動作を記入する ###
+
+        except KeyboardInterrupt:
+            print('左上端終了')
         
-        # 
         
-        textBox.delete("1.0","end")
+        print("右下端をクリックしてください")
+        messagebox.showinfo('確認', 'スクショ範囲の右下をクリック')
+        try:
+            while True:
+                if ctypes.windll.user32.GetAsyncKeyState(0x01) == 0x8000:
+                    x, y = pag.position()
+                    print(str(x) + ':' + str(y))
+                    x2 = x
+                    y2 = y
+                    break
+                ### ここにクリック時の動作を記入する ###
+
+        except KeyboardInterrupt:
+            print('右下端終了')
+    # テキストボックス -> マウスの座標表示      xy.insert(tkinter.END,"1234")で挿入　　　　.get()で取得　.delete(0, tkinter.END)でクリア
+        xy1.insert(tk.END,'  ('+str(x1)+','+str(y1)+')')
+        xy2.insert(tk.END,'  ('+str(x2)+','+str(y2)+')')
         
-        textBox.insert(END, result)
         
+    # ラベル1の生成
+    label1 = tk.Label(tab1, text='1.範囲および時間を指定してください', bg=bg_col,font=("", "13", "bold"))
+    label1.pack(padx=5, pady=7)
+    
+    # ボタンの作成と配置
+    label2 = tk.Label(tab1, text='左上：', bg=bg_col)
+    label2.place(x=60, y=50, width = 40, height = 32)
+    # テキストボックス -> マウスの座標表示      xy.insert(tkinter.END,"1234")で挿入　　　　.get()で取得　.delete(0, tkinter.END)でクリア
+    xy1 = tk.Entry(tab1,relief="solid",width=20)
+    xy1.place(x=100, y=50, width = 100, height = 32)
+    
+    label3 = tk.Label(tab1, text='右下：', bg=bg_col)
+    label3.place(x=210, y=50, width = 40, height = 32)
+    xy2 = tk.Entry(tab1,relief="solid",width=20)
+    xy2.place(x=250, y=50, width = 100, height = 32)
+    
+    mouse_button = tk.Button(tab1, text="範囲決定",relief="solid", bg="white", fg = "#2f4f4f",bd=1, command = mouse )
+    mouse_button.place(x = 360, y = 50, width = 70, height = 32)
+    
+    label4 = tk.Label(tab1, text='時間：', bg=bg_col)
+    label4.place(x=60, y=100, width = 40, height = 32)
+    
+    doga = tk.Entry(tab1,relief="solid",width=20)
+    doga.place(x=100, y=100, width = 100, height = 32)
+    
+    label5 = tk.Label(tab1, text='※2倍再生の場合は÷2した時間', bg=bg_col, fg = "#707070")
+    label5.place(x=220, y=100, width = 200, height = 32)
 
 
-    # テキスト出力ボックスの作成
+    # スクショのスタート
+    label5 = tk.Label(tab1, text='2.スタートボタンを押してください', bg=bg_col,font=("", "13", "bold"))
+    label5.place(x=45, y=140, width =400, height = 32)
+    
+    
+    start_button = tk.Button(tab1, text="スタート",relief="solid", bg="white", fg = "#2f4f4f",bd=1, command = mouse )
+    start_button.place(x = 160, y = 190, width = 120, height = 60)
+    
 
-    #文字を表示する。
-    param_name = tk.Label(tab1, text="出力",font=('',11), bg =  bg_col)
-    param_name.place(x=10, y=218)
-    textBox = Text(tab1, width=67,height=10)
-    textBox.place(x=10,y = 240)
-
-
-
+    
+    
+    
+    
     return 0
 
