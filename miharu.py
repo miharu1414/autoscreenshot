@@ -14,8 +14,6 @@ answer_ja = ''
 
 def tab1_main(tab1):
     
-   
- 
     tr = Translator()
     result = tr.translate("hello", src="en", dest="ja").text
     print(result)
@@ -35,6 +33,7 @@ def tab1_main(tab1):
 
     ok_button = tk.Button(tab1, text="OK", width = 7, relief="solid", bd=1)
     ok_button.place(x=220,y = 190)
+
 
     # テキストの入力完了ボタン
     def ok_click():
@@ -68,6 +67,7 @@ def tab1_main(tab1):
     param_name.place(x=10, y=218)
     textBox = Text(tab1, width=67,height=10)
     textBox.place(x=10,y = 240)
+
 
 
     return 0
