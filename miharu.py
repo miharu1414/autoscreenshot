@@ -44,9 +44,9 @@ answer_ja = ''
     
         #s = input("sと入力してください:")
 x1 ,x2, y1, y2 = 0,0,0,0
-interval = 2.4
+interval = 2.3
 pdf_img = []
-doga = 0
+doga_m,doga_s,doga_speed = 0,0,0
 
 def tab1_main(tab1):
     bg_col =  '#ffffe0'
@@ -99,17 +99,30 @@ def tab1_main(tab1):
             
             
     def get_sukusyo():
+        start = time.perf_counter()
         global pdf_img,interval,a1
         a1 = 0
         pdf_img.clear()
-        global doga
-        print(doga.get())
+        global doga_m,doga_s,doga_speed
     
         try:
+            if doga_m.get() == '':
+                minutes = 0
+            else:
+                minutes = float(doga_m.get())
+            print(minutes)
+            
+            if doga_s.get() == '':
+                second = 0
+            else:
+                second = float(doga_s.get())
+            print(second)
+            speed = float(doga_speed.get())
+            print(doga_speed.get())
 
-            doga_time = doga.get()
-            doga_time = float(doga_time)
-            start = time.perf_counter()
+            doga_time = (minutes*60 + second)/speed
+            print(f'{doga_time}秒スクショします')
+            doga_time -= 1.5
         except:
             messagebox.showerror('エラー', '動画時間が適切に入力されていません')
             return 0
@@ -235,15 +248,32 @@ def tab1_main(tab1):
     mouse_button = tk.Button(tab1, text="範囲決定",relief="solid", bg="white", fg = "#2f4f4f",bd=1, command = mouse )
     mouse_button.place(x = 360, y = 50, width = 70, height = 32)
     
+    
+    height = 26
     label4 = tk.Label(tab1, text='時間：', bg=bg_col)
-    label4.place(x=60, y=100, width = 40, height = 32)
+    label4.place(x=60, y=100, width = 40, height = height)
     
-    global doga
-    doga = tk.Entry(tab1,relief="solid",width=20)
-    doga.place(x=100, y=100, width = 100, height = 32)
+    global doga_s,doga_m,doga_speed
+
+    doga_m = tk.Entry(tab1,relief="solid",width=20, justify="right")
+    doga_m.place(x=100, y=100, width = 40, height = height)
     
-    label5 = tk.Label(tab1, text='※2倍再生の場合は÷2した時間', bg=bg_col, fg = "#707070")
-    label5.place(x=220, y=100, width = 200, height = 32)
+    label_min = tk.Label(tab1, text='分', bg=bg_col)
+    label_min.place(x=140, y=100, width = 20, height = height)
+    
+    doga_s = tk.Entry(tab1,relief="solid",width=20, justify="right")
+    doga_s.place(x=170, y=100, width = 40, height = height)
+    
+    label_sec = tk.Label(tab1, text='秒', bg=bg_col)
+    label_sec.place(x=210, y=100, width = 20, height =  height)
+    
+    doga_speed = tk.Entry(tab1,relief="solid",width=20, justify="right")
+    doga_speed.insert(0, "1")
+    doga_speed.place(x=240, y=100, width = 40, height = height)
+    
+    label_sec = tk.Label(tab1, text='倍', bg=bg_col, fg = "#707070")
+    label_sec.place(x=280, y=100, width = 20, height = height)
+    
 
 
     # スクショのスタート
