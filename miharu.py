@@ -143,7 +143,7 @@ def tab1_main(tab1):
                     a1 = dist
                     return 1
 
-            if dist > 1: #if dist < 0.90 and result < 5e-09:
+            if dist > 1.2: #if dist < 0.90 and result < 5e-09:
                 a1 = dist
                 print("yes")
                 return 1
