@@ -177,7 +177,7 @@ def tab1_main(tab1):
         print(abs_path)
         try:
             start_time = time.perf_counter()
-            sleep(3)
+            sleep(2)
             while 1:
 
                 
