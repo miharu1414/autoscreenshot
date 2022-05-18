@@ -19,3 +19,5 @@ def judge(path1, path2):
   
 a = judge("img2.png", "img1.png")
 
+
+
