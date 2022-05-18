@@ -5,14 +5,35 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
-from googletrans import Translator
+
 
 from re import X
 import pyautogui 
 import ctypes
 import time
 import pyautogui as pag
+import numpy as np
+
+from itertools import count
+import math
+from webbrowser import get
+import pyautogui as pag
+from time import sleep
+import time
+import os
+from re import X
+import ctypes
+import time
+from PIL import Image 
+import shutil
+import img2pdf
+from natsort import natsorted
+import imgsim
+import cv2
+
+
 # global 変数
+
 answer_ja = ''
 
 
@@ -23,14 +44,13 @@ answer_ja = ''
     
         #s = input("sと入力してください:")
 x1 ,x2, y1, y2 = 0,0,0,0
+interval = 2.4
+pdf_img = []
+doga = 0
 
 def tab1_main(tab1):
     bg_col =  '#ffffe0'
     tab1['bg'] = bg_col
-    
-    
-    
-    
     
 
 
@@ -73,7 +93,129 @@ def tab1_main(tab1):
         xy1.insert(tk.END,'  ('+str(x1)+','+str(y1)+')')
         xy2.insert(tk.END,'  ('+str(x2)+','+str(y2)+')')
         
+            
+            
+
+            
+            
+    def get_sukusyo():
+        global pdf_img,interval,a1
+        a1 = 0
+        pdf_img.clear()
+        global doga
+        print(doga.get())
+    
+        try:
+
+            doga_time = doga.get()
+            doga_time = float(doga_time)
+            start = time.perf_counter()
+        except:
+            messagebox.showerror('エラー', '動画時間が適切に入力されていません')
+            return 0
+            
         
+        def judge(path1, path2):
+            global a1
+            img0 = cv2.imread(path1)
+            img1 = cv2.imread(path2)
+
+            vtr = imgsim.Vectorizer()
+            vec0 = vtr.vectorize(img0)
+            vec1 = vtr.vectorize(img1)
+            
+            List1 = np.ravel(img0)
+            List2 = np.ravel(img1)
+            result = np.dot(List1, List2)/(np.linalg.norm(List1)*np.linalg.norm(List2))
+            
+            
+            dist = imgsim.distance(vec0, vec1)
+            #dist = np.count_nonzero(img0 == img1) / img1.size
+            
+            print(result)
+            print(a1)
+            print(dist)
+
+            
+
+            if a1 !=0:
+                if dist/a1 >= 20:
+                    a1 = dist
+                    return 1
+
+            if dist > 1.2: #if dist < 0.90 and result < 5e-09:
+                a1 = dist
+                print("yes")
+                return 1
+            a1 = dist
+            print("no")
+            return 0
+        i = 1
+        global path
+        path = "sukusyo"
+        
+        try:
+            shutil.rmtree(path)
+        except:
+            pass
+        os.mkdir(path)
+        
+        abs_path = os. getcwd()
+        print(abs_path)
+        try:
+            start_time = time.perf_counter()
+            sleep(3)
+            while 1:
+
+                
+                
+                img = pag.screenshot(region= (x1,y1,x2-x1,y2-y1))
+                img.save(path + "/img"+str(i)+".png")
+                print( "/img"+str(i)+".png"+"を保存しました")
+                if i == 1:
+                    pdf_img.append(path+"/img"+str(i)+".png")
+
+                    i = i + 1
+                    continue
+                if judge(abs_path+'/'+path+"/img"+str(i)+".png",abs_path+'/'+path + "/img"+str(i-1)+".png"):
+                    pdf_img.append(abs_path+'/'+path+"/img"+str(i)+".png")
+ 
+                i = i + 1
+                timer = time.perf_counter()
+                
+                end_time = time.perf_counter()
+                
+                # PC性能の差による処理時間の調整
+                if end_time - start_time < interval:
+                    sleep(interval - (end_time-start_time))
+                if timer-start > doga_time:
+                    break
+        except KeyboardInterrupt:
+            print('\n')
+        messagebox.showinfo('確認', 'スライドの撮影が終了しました')
+        print(*pdf_img)
+        
+
+        return pdf_img
+
+        
+        
+    def png_to_pdf():
+        global pdf_img
+        outputpath= "file.pdf"
+        try:
+            os.remove(outputpath)
+        except:
+            pass
+        layout = img2pdf.get_layout_fun((img2pdf.mm_to_pt(257), img2pdf.mm_to_pt(182)))
+        pdf_img.pop(0)
+        with open(outputpath, "wb") as f:
+            f.write(img2pdf.convert([i for i in natsorted(pdf_img) if ".png" in i], layout_fun=layout))
+                # フォルダの削除
+        messagebox.showinfo('確認', 'PDF化できました')
+        shutil.rmtree(path)
+
+            
     # ラベル1の生成
     label1 = tk.Label(tab1, text='1.範囲および時間を指定してください', bg=bg_col,font=("", "13", "bold"))
     label1.pack(padx=5, pady=7)
@@ -96,6 +238,7 @@ def tab1_main(tab1):
     label4 = tk.Label(tab1, text='時間：', bg=bg_col)
     label4.place(x=60, y=100, width = 40, height = 32)
     
+    global doga
     doga = tk.Entry(tab1,relief="solid",width=20)
     doga.place(x=100, y=100, width = 100, height = 32)
     
@@ -104,17 +247,23 @@ def tab1_main(tab1):
 
 
     # スクショのスタート
-    label5 = tk.Label(tab1, text='2.スタートボタンを押してください', bg=bg_col,font=("", "13", "bold"))
-    label5.place(x=45, y=140, width =400, height = 32)
+    label6 = tk.Label(tab1, text='2.スタートボタンを押してください', bg=bg_col,font=("", "13", "bold"))
+    label6.place(x=43, y=140, width =380, height = 32)
     
     
-    start_button = tk.Button(tab1, text="スタート",relief="solid", bg="white", fg = "#2f4f4f",bd=1, command = mouse )
+    start_button = tk.Button(tab1, text="スタート",relief="solid", bg="white", fg = "#2f4f4f",bd=1, command = get_sukusyo)
     start_button.place(x = 160, y = 190, width = 120, height = 60)
     
-
+    # スクショのスタート
+    label7 = tk.Label(tab1, text='3.PDFに出力します', bg=bg_col,font=("", "13", "bold"))
+    label7.place(x=50, y=260, width =200, height = 32)
+    
+    
+    start_button = tk.Button(tab1, text="出力",relief="solid", bg="white", fg = "#2f4f4f",bd=1, command = png_to_pdf)
+    start_button.place(x = 160, y = 320, width = 120, height = 60)
+    
     
     
     
     
     return 0
-
