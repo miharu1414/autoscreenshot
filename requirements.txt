@@ -2,9 +2,6 @@ imagehash
 opencv-python
 opencv-contrib-python
 pyautogui
-PIL
-
-
 img2pdf
 natsort
 googletrans==4.0.0-rc1
